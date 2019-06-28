@@ -6,6 +6,7 @@ const { Meta } = Card;
 export default class GoodsInfo extends React.Component{
     render(){
         const goods = this.props['goods'];
+        console.log(goods);
         return (
             <div className='goodsInfo'>
                 {!goods.length ? <div><Skeleton active /><Skeleton active /></div> :<div className='content'>
