@@ -5,8 +5,10 @@ import {
   Tooltip,
   Icon,
   Checkbox,
-  Button
+  Button,
+  message
 } from 'antd';
+import { Post } from '../utils/Request';
 import '../stylesheets/DrawerRegisterForm.css'
 
 export default class RegistrationForm extends React.Component {
@@ -17,15 +19,25 @@ export default class RegistrationForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    const golbalMessage = message;
     const register = this.props['handleRegister'];
     this.props['form'].validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
         const url = '/api/user/register';
-        const data = {"学号":1,"用户名":values.nickname,"密码":btoa(values.password_1),
+        const data = {"学号":values.schoolNumber,"用户名":values.nickname,"密码":btoa(values.password_1),
                       "教务处密码":values.password_2,"手机号":values.phone,"邮箱":values.email,
                       "地址":values.address};
-        
+        const res = Post(url, data);
+        res.then(response=>{
+          let {code, message, data} = response;
+          if(code !== 200) golbalMessage.error(message);
+          let user = {
+            username : values.nickname,
+            isLogin : true
+          };
+          register(user);
+        });
       }
     });
   };
@@ -118,6 +130,20 @@ export default class RegistrationForm extends React.Component {
             ],
           })(<Input.Password onBlur={this.handleConfirmBlur} />)}
         </Form.Item>
+        <Form.Item
+          label={
+            <span>
+              学号&nbsp;
+              <Tooltip title="用于验证身份的学号">
+                <Icon type="question-circle-o" />
+              </Tooltip>
+            </span>
+          }
+        >
+          {getFieldDecorator('schoolNumber', {
+            rules: [{ required: true, message: '请输入你的学号！', whitespace: true }],
+          })(<Input />)}
+        </Form.Item>
         <Form.Item label="用于验证身份的教务处密码" hasFeedback>
           {getFieldDecorator('password_2', {
             rules: [
@@ -150,19 +176,6 @@ export default class RegistrationForm extends React.Component {
             rules: [{ required: true, message: '请输入你的电话号码！' }],
           })(<Input style={{ width: '100%' }} />)}
         </Form.Item>
-        <Form.Item {...tailFormItemLayout}>
-          {getFieldDecorator('agreement', {
-            valuePropName: 'checked',
-          })(
-            <Checkbox onChange={()=>{
-              this.setState({
-                registerButtonDisable : !this.state.registerButtonDisable
-              })
-            }}>
-              我已经阅读并同意 <a href="seefun.club">用户协议</a>
-            </Checkbox>,
-          )}
-        </Form.Item>
         <Form.Item
           label={
             <span>
@@ -176,6 +189,20 @@ export default class RegistrationForm extends React.Component {
           {getFieldDecorator('address', {
             rules: [{ required: true, message: '请输入你的收货地址！', whitespace: true }],
           })(<Input />)}
+        </Form.Item>
+
+        <Form.Item {...tailFormItemLayout}>
+          {getFieldDecorator('agreement', {
+            valuePropName: 'checked',
+          })(
+            <Checkbox onChange={()=>{
+              this.setState({
+                registerButtonDisable : !this.state.registerButtonDisable
+              })
+            }}>
+              我已经阅读并同意 <a href="seefun.club">用户协议</a>
+            </Checkbox>,
+          )}
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Button disabled={this.state.registerButtonDisable} type="primary" htmlType="submit">
