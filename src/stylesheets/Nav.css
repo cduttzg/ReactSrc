@@ -1,0 +1,64 @@
+
+a{
+    text-decoration: none;
+}
+
+#Menu{
+    margin-top: 10%;
+    margin-left: 10%;
+    position: fixed
+}
+
+#Menu #ItemGroup div{
+    float: right;
+}
+
+#Menu #ItemGroup .NavImg1{
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background-repeat:round;
+    background-image: url(../imgs/VirtualView.png);
+}
+    
+#Menu #ItemGroup .NavImg2{
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background-repeat:round;
+    background-image: url(../imgs/求购.png);
+}
+
+/*
+#flashSale{
+    margin-top: 20px;
+    width: 100px;
+    height: 200px;
+    position: relative;
+    padding-top: 20px;
+    left: -150px;
+    top: 30px;
+}
+
+#flashSale a{
+    float: right;
+    color: black;
+}
+
+#flashSale li{
+    width: 100px;
+    height: 30px;
+}
+
+#flashSale li span{
+    margin: 10px;
+}
+#flashSale #saleImg{
+    position: relative;
+    width: 100px;
+    height: 100px;
+    left: 150px;
+    bottom: 50px;
+    background-repeat: round;
+    background-image: url(/static/media/miaoSha.jpg);
+}*/
