@@ -1,0 +1,49 @@
+#header{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+}
+.logo{
+    width: 31px;
+    height: 31px;
+    margin: 16px 0px 16px 80px;
+    float: left;
+    background-image: url('../imgs/柠檬.png');
+    background-size: contain;
+}
+.siteName{
+    width: 80px;
+    height: 31px;
+    line-height: 31px;
+    text-align: center;
+    margin: 16px 44px 16px 0;
+    float: left;
+}
+.forSearch{
+    width: 230px;
+    height: 31px;
+    line-height: 31px;
+    margin: 16px 20px 16px 0;
+    float: right;
+}
+.register,.login{
+    height : 31px;
+    float: right;
+}
+.register{
+    margin-left: 5px;
+    margin-right: 25px;
+}
+.login{
+    margin-left: 25px;
+}
+.login::after{
+    content: '/';
+    padding-left: 5px;
+}
+.userAvatar{
+    margin: 13px 10px 0px 0px !important;
+    float: right;
+    cursor: pointer;
+}
