@@ -1,10 +1,8 @@
 import React,{Component} from 'react'
-import '../styleSheets/Cart.css'
+import '../stylesheets/Cart.css'
 import { Popover, Button, Avatar, List, message, Spin, Badge } from 'antd';
-import reqwest from 'reqwest';
+import { Get } from '../utils/Request';
 import InfiniteScroll from 'react-infinite-scroller';
-
-const fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
 
 class InfiniteListExample extends React.Component {
   state = {
@@ -13,24 +11,15 @@ class InfiniteListExample extends React.Component {
     hasMore: true,
   };
   componentDidMount() {
-    this.fetchData(res => {
+    let url = `https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo`;
+    let res = Get(url);
+    res.then(response=>{
+      let {code,message,data} = response;
       this.setState({
-        data: res.data.data,
-      });
+        data : data.data
+      })
     });
   }
-
-  fetchData = callback => {
-    reqwest({
-      url: fakeDataUrl,
-      type: 'json',
-      method: 'get',
-      contentType: 'application/json',
-      success: res => {
-        callback(res);
-      },
-    });
-  };
 
   handleInfiniteOnLoad = () => {
     let { data } = this.state;
@@ -45,12 +34,15 @@ class InfiniteListExample extends React.Component {
       });
       return;
     }
-    this.fetchData(res => {
-      data = data.concat(res.results);
+    let url = `https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo`;
+    let res = Get(url);
+    res.then(response=>{
+      let {code,message,data} = response;
+      const dataNew = data.concat(data.data);
       this.setState({
-        data,
-        loading: false,
-      });
+        data : dataNew,
+        loading : false
+      })
     });
   };
 
