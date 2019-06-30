@@ -1,16 +1,14 @@
 #Cart{
     position: relative;
-    bottom: px;
-    right: 0px;
-    width: 150px;
-    height: 50px;
+    width: 100%;
+    height: 100%;
 }
 #CartDiv{
     position: fixed;
-    width: 12%;
-    height: 66px;
-    bottom: 0px;
-    right: 0;
+    width: 150px;
+    height: 50px;
+    bottom: 2%;
+    right: 1%;
 }
 #CartDiv span{
     position: relative;
