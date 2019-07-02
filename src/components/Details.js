@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import {BrowserRouter as Router, Link} from 'react-router-dom'
 import { Layout, Breadcrumb, Card, Avatar, Col, Row, Button } from 'antd'
 import '../styleSheets/Details.css'
+import { thisExpression } from '@babel/types';
 
 export default class Details extends Component{
     constructor(props){
@@ -10,10 +11,17 @@ export default class Details extends Component{
             sellerName:"灰太狼",
             sellerAvatar:"xxx",
             sellerSoldNum: 999,
+            btnDisable1: false,
+            btnDisable2: false,
+            loading:false,
+            goodsId:"007",
+            goodsName:"小红的帽子",
+            goodsImg:"adsad",
+            goodsInfo:"陪伴小红经历种种磨难却任然坚挺的帽子!",
+            goodsPrice:88,
             sellerPhoneNum:"17766377737",
             goodsNum:1,
-            goodsStock:233,
-            btnDisable: false
+            goodsStock:10,
         }
         this.numChange1=this.numChange1.bind(this);
         this.numChange2=this.numChange2.bind(this);
@@ -22,12 +30,14 @@ export default class Details extends Component{
     numChange1(){
         if(this.state['goodsNum']===1){
             this.setState({
-                btnDisable: true,
+                btnDisable1: true,
+                btnDisable2: false,
                 goodsNum: --this.state['goodsNum'],
             })
         }else{
             this.setState({
-                btnDisable: false,
+                btnDisable1: false,
+                btnDisable2: false,
                 goodsNum: --this.state['goodsNum'],
             })
         }
@@ -35,24 +45,36 @@ export default class Details extends Component{
     }
 
     numChange2(){
-        if(this.state['goodsNum']===this.state['goodsStock']){
+        if(this.state['goodsNum']===this.state['goodsStock']-1){
             this.setState({
-                btnDisable: true
+                goodsNum: ++this.state['goodsNum'],
+                btnDisable2: true,
+                btnDisable1: false
             })
         }else{
             this.setState({
                 goodsNum: ++this.state['goodsNum'],
-                btnDisable: false
+                btnDisable1: false,
+                btnDisable2: false
             })
         }
     }
+
+    enterLoading = () => {
+        this.setState({ loading: true });
+    };
     
     render(){
         
         const ButtonGroup = Button.Group;
-        const post = {//this.props;
+        const post = {//this.props.locations.state.
+            goodsId:"007",
             goodsName:"小红的帽子",
             goodsInfo:"陪伴小红经历种种磨难却任然坚挺的帽子!",
+            goodsPrice:88,
+            sellerPhoneNum:"17766377737",
+            goodsNum:1,
+            goodsStock:233,
 
         }
         const { Header, Content, Footer , Sider } = Layout;
@@ -63,7 +85,7 @@ export default class Details extends Component{
                 <Content style={{ padding: '0 50px' }}>
                     <Router>
                         <Breadcrumb separator=">"style={{ margin: '16px 0' }}>
-                            <Link to=""><Breadcrumb.Item>首页a</Breadcrumb.Item></Link>
+                            <Link to=""><Breadcrumb.Item>首页</Breadcrumb.Item></Link>
                             <Link to=""><Breadcrumb.Item>分类名</Breadcrumb.Item></Link>
                             <Breadcrumb.Item>商品名</Breadcrumb.Item>
                         </Breadcrumb>
@@ -75,9 +97,9 @@ export default class Details extends Component{
                                 <Layout>
                                     <Content>
                                         <div id="goodsInfo">
-                                            <Card title={post.goodsName}>
+                                            <Card title={this.state['goodsName']}>
                                                 <Card type="inner" bordered={false} title="商品描述">
-                                                    {post.goodsInfo}
+                                                    {this.state['goodsInfo']}
                                                 </Card>
                                                 <Card
                                                     bordered={false}
@@ -90,7 +112,7 @@ export default class Details extends Component{
                                                         <Col span={8}>
                                                             <Card hoverable bordered={false}>
                                                             <Avatar ></Avatar>
-                                                                <p
+                                                                <span
                                                                     style={{
                                                                     fontSize: 14,
                                                                     color: 'rgba(0, 0, 0, 0.85)',
@@ -99,8 +121,8 @@ export default class Details extends Component{
                                                                     }}
                                                                 >
                                                                     {this.state['sellerName']}
-                                                                </p>
-                                                                    联系方式:{this.state['sellerPhoneNum']}
+                                                                </span>
+                                                                    <p>联系方式:<p>{this.state['sellerPhoneNum']}</p></p>
                                                             </Card>
                                                         </Col>
                                                         <Col span={8} offset={8}>
@@ -120,28 +142,34 @@ export default class Details extends Component{
                                     <Row type="flex" justify="space-around" align="middle">
                                         <Col span={4}>
                                             <div className="OperatorsBox">
-                                                <table></table>
-                                            <ButtonGroup>
-                                                <div id="numChange">
-                                                    <table></table>
-                                                    <Button disabled={this.state['btnDisable']} type="primary" icon="minus" onClick={this.numChange1}/><p>{this.state['goodsNum']}</p><Button block={true} type="primary" icon="plus" onClick={this.numChange2}/>
-                                                </div>
-                                            </ButtonGroup>
+                                                
+                                                <ButtonGroup>
+                                                    <div id="numChange">
+                                
+                                                        <Button className='btn-Jankin' disabled={this.state['btnDisable1']} type="primary" icon="minus" onClick={this.numChange1}/>
+                                                        <span className='span-Jankin'>{this.state['goodsNum']}</span>
+                                                        <Button className='btn-Jankin' disabled={this.state['btnDisable2']} type="primary" icon="plus" onClick={this.numChange2}/>
+                                                    </div>
+                                                </ButtonGroup>
                                             </div>
                                         </Col>
                                         <Col span={4}>
                                             <div className="OperatorsBox">
-
+                                                <span>￥{this.state['goodsNum']*this.state['goodsPrice']}</span>
                                             </div>
                                         </Col>
-                                        <Col span={4}>
+                                        <Col span={2}>
                                             <div className="OperatorsBox">
-
+                                            <Button type="primary" shape="round" icon="shopping-cart" size="large">
+                                                进入购物车
+                                            </Button>
                                             </div>
                                         </Col>
-                                        <Col span={4}>
+                                        <Col span={3}>
                                             <div className="OperatorsBox">
-
+                                            <Button type="primary" shape="round" icon="pay-circle" size="large" loading={this.state['loading']} onClick={this.enterLoading}>
+                                                立即购买
+                                            </Button>
                                             </div>
                                         </Col>
                                     </Row>
