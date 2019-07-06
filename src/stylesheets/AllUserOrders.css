@@ -1,0 +1,10 @@
+.orders-c1er{
+    margin: 5px 10px;
+}
+.orders-goods-contents-cler{
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+    white-space: nowrap;
+}

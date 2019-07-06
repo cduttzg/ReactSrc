@@ -1,0 +1,17 @@
+.shelves-c1er{
+    margin: 5px 10px;
+}
+.shelves-content-c1er{
+    overflow: auto;
+}
+.statistic-content-c1er{
+    width: 200px;
+    float: left;
+    margin-left: 30px;
+    text-align: center;
+}
+.shelves-imgs-c1er{
+    width: 200px;
+    max-width: 200px;
+    overflow: hidden;
+}

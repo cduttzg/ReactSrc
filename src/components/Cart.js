@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import '../stylesheets/Cart.css'
 import { Popover, Button, Avatar, List, message, Spin, Badge } from 'antd';
+import { Link } from 'react-router-dom';
 import { Get } from '../utils/Request';
 import InfiniteScroll from 'react-infinite-scroller';
 
@@ -9,9 +10,12 @@ class InfiniteListExample extends React.Component {
     data: [],
     loading: false,
     hasMore: true,
+    username : this.props.username || window.sessionStorage.getItem('username')
   };
   componentDidMount() {
-    let url = `https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo`;
+    let url = `/api/home/cartInfo?用户名=${this.state.username}`;
+    console.log(this.state);
+    console.log(window.sessionStorage);
     let res = Get(url);
     res.then(response=>{
       let {code,message,data} = response;
@@ -34,7 +38,7 @@ class InfiniteListExample extends React.Component {
       });
       return;
     }
-    let url = `https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo`;
+    let url = `/api/cart/cartInfo?用户名=${this.state.username}`;
     let res = Get(url);
     res.then(response=>{
       let {code,message,data} = response;
@@ -62,7 +66,7 @@ class InfiniteListExample extends React.Component {
               <List.Item key={item.id}>
                 <List.Item.Meta
                   avatar={
-                    <span style={{ marginRight: 24}}>
+                    <span style={{ marginRight: 14}}>
                       {/*商品数量*/}
                       <Badge count={item["数量"]}>
                         <Avatar shape="square" src={item["商品图片"]} />
@@ -70,11 +74,13 @@ class InfiniteListExample extends React.Component {
                     </span>
                   }
                   //商品名称
-                  title={<a href="https://ant.design">{item["商品名称"]}</a>}
-                  description={//商品描述
-                    item["描述"]}
+                  title={item["商品名称"]}
+                  // description={//商品描述
+                  //   item["描述"]}
                 />
-                <div>{/*商品总价*/}￥{item["单价"]}</div>
+                {/** 
+                <div>{/*商品总价}￥{item["单价"]}</div>
+                */}
               </List.Item>
             )}
           >
@@ -101,16 +107,20 @@ export default class Cart extends Component{
 
   render(){   
     const content = (
-        //<InfiniteListExample></InfiniteListExample>
-        <div>content</div>
+        <InfiniteListExample username={window.sessionStorage.getItem('username')} />
       );
 
     return(
-      <Popover content={content}>
+      <Link to={{
+        pathname : '/cart/details',
+        state : {username: this.props.username}
+      }}>
+        <Popover content={content}>
           <div id="CartDiv">
             <Button id="Cart" type="primary"><div id="cartImg"></div><span>进入购物车</span></Button>
           </div>
-      </Popover>
+        </Popover>
+      </Link>
     );
   }
 }

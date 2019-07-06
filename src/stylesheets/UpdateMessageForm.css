@@ -1,0 +1,31 @@
+.ant-drawer-body{
+    margin-right: 55px !important;
+}
+.upLoadtext{
+    margin-top: 5px;
+}
+.avatar-uploader-c1er > div.ant-upload-select-picture-card{
+    margin: 0 auto;
+    width: 500px;
+    overflow: hidden;
+}
+#showAvatar-c1er{
+    width: 500px;
+    height: 300px;
+    max-height: 300px;
+}
+#showAvatar-c1er-re{
+	max-height: 300px;
+}
+#moneyCode-c1er{
+    width: 500px;
+    height: 300px;
+    max-height: 300px;
+}
+.ant-form-item-c1er{
+    margin-right: 100px;
+}
+.message-update-c1er{
+    margin-top: 20px;
+    padding-left: 17%;
+}

@@ -16,14 +16,29 @@ export default class LoginForm extends React.Component {
         const res = Post(url, data);
         res.then(response => {
           let {code, message, data} = response;
-          if(code !== 200) golbalMessage.error(message);
-          const user = {
-            username : values.username,
-            isFrozen : data['是否被冻结'],
-            role : data['角色'],
-            isLogin : true
-          };
-          submit(user);
+          if(code !== 200) {golbalMessage.error(message)}
+          //c1er:7/4这里做出了改动：将外部代码引入到else块里
+          else{
+            const user = {
+              username : values.username,
+              isFrozen : data['是否被冻结'],
+              role : data['角色'],
+              isLogin : true,
+              userAvatarSrc : data['用户头像']
+            };
+  
+            golbalMessage.success('登陆成功！');
+            submit(user);
+            //remember the password
+            if(values.remember){
+              let storage = window.localStorage;
+              storage.clear();
+              storage.setItem('password',btoa(values.password));
+              storage.setItem('username',values.username);
+              console.log('登陆成功，设置localStorage');
+              console.log(storage);
+            }
+          }
         });
       }
     });
@@ -62,10 +77,10 @@ export default class LoginForm extends React.Component {
           <a className="login-form-forgot" href="seefun.club">
               忘记密码
           </a>
-          <Button type="primary" htmlType="submit" className="login-form-button">
+          <Button type="primary" htmlType="submit" className="login-form-button" >
               登陆
           </Button>
-          或者  <a href="seefun.club">注册一个</a>
+          或者&nbsp;&nbsp;点击注册按钮去注册一个？
         </Form.Item>
       </Form>
     );

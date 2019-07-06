@@ -1,0 +1,33 @@
+#goodsGallery{
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 65px;
+    padding: 15px 30px;
+}
+.goods-gallery-img-c1er{
+    float: right;
+    max-width: 400px;
+    height: 200px;
+}
+.goods-gallery-statistic-c1er{
+    overflow: auto;
+}
+.goods-gallery-header-c1er{
+    font-size: 20px;
+}
+.goods-statistic-content-c1er{
+    text-align: center;
+    width: 120px;
+    float: left;
+    margin-left: 80px !important;
+}
+.goods-gallery-content-c1er{
+    max-width: 400px;
+}
+.goods-gallery-phone-c1er{
+    height: 20px;
+    line-height: 20px;
+    text-align: end;
+    margin: 5px;
+    margin-right: 30px;
+}

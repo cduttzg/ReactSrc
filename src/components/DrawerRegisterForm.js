@@ -31,12 +31,14 @@ export default class RegistrationForm extends React.Component {
         const res = Post(url, data);
         res.then(response=>{
           let {code, message, data} = response;
-          if(code !== 200) golbalMessage.error(message);
-          let user = {
-            username : values.nickname,
-            isLogin : true
-          };
-          register(user);
+          if(code !== 200) golbalMessage.error(message)
+          else{
+            let user = {
+              username : values.nickname,
+              isLogin : true
+            };
+            register(user);
+          }
         });
       }
     });
@@ -55,7 +57,6 @@ export default class RegistrationForm extends React.Component {
       callback();
     }
   };
-
   validateToNextPassword = (rule, value, callback) => {
     const form = this.props['form'];
     if (value && this.state.confirmDirty) {
@@ -65,7 +66,6 @@ export default class RegistrationForm extends React.Component {
   };
   render() {
     const { getFieldDecorator } = this.props['form'];
-
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -102,6 +102,20 @@ export default class RegistrationForm extends React.Component {
                 message: '请输入你的电子邮箱！',
               },
             ],
+          })(<Input />)}
+        </Form.Item>
+        <Form.Item
+          label={
+            <span>
+              用户名&nbsp;
+              <Tooltip title="请输入你的用户名">
+                <Icon type="question-circle-o" />
+              </Tooltip>
+            </span>
+          }
+        >
+          {getFieldDecorator('nickname', {
+            rules: [{ required: true, message: '请输入你的用户名！', whitespace: true }],
           })(<Input />)}
         </Form.Item>
         <Form.Item label="密码" hasFeedback>
@@ -156,20 +170,6 @@ export default class RegistrationForm extends React.Component {
               },
             ],
           })(<Input.Password />)}
-        </Form.Item>
-        <Form.Item
-          label={
-            <span>
-              用户名&nbsp;
-              <Tooltip title="请输入你的用户名">
-                <Icon type="question-circle-o" />
-              </Tooltip>
-            </span>
-          }
-        >
-          {getFieldDecorator('nickname', {
-            rules: [{ required: true, message: '请输入你的用户名！', whitespace: true }],
-          })(<Input />)}
         </Form.Item>
         <Form.Item label="电话号码">
           {getFieldDecorator('phone', {

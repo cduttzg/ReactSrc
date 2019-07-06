@@ -58,3 +58,26 @@
 .ant-carousel .slick-slide h3 {
   color: #fff;
 }
+#details{
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 65px;
+  padding: 15px 30px;
+}
+.sider-goodsImg-Jankin{
+  height: 380px;
+  max-height: 380px;
+  max-width: 350px;
+  border-radius: 5px;
+}
+.goods-img-c1er{
+  width: 100px;
+  max-width: 200px;
+  max-height: 200px;
+}
+.moneyCode-img-c1er{
+  width: 100px;
+  max-height: 200px;
+  max-width: 200px;
+  margin: 0 auto;
+}

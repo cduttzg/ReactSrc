@@ -35,7 +35,7 @@ function Post(url, data){
 }
 function PutImage(url, formData){
     return fetch(url, {
-        method : "PUT",
+        method : "POST",
         body : formData
     }).then(response => {
         return handlResponse(url, response);

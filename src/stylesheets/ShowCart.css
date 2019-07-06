@@ -2,3 +2,18 @@
     position: relative;
     height: 100px;
 }
+#showCart{
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 65px;
+    padding: 15px 30px;
+}
+.btn-Jankin{
+    width: 32px !important;
+  }
+  .span-Jankin{
+    margin: 0 10px !important;
+    display: inline-block;
+    width: 30px;
+    text-align: center;
+  }

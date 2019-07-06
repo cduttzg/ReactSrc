@@ -1,0 +1,22 @@
+.userSeek{
+    margin: 5px 10px;
+}
+.seek-info-c1er{
+    overflow: auto;
+}
+.seek-content-c1er{
+    float: right;
+    padding: 5px 10px;
+}
+.seekImgUpload-c1er > div.ant-upload-select-picture-card{
+    margin: 0 auto;
+    width: 500px;
+    overflow: hidden;
+}
+.upLoadtext-c1er{
+    margin-top: 5px;
+}
+#showSeekImg-c1er{
+    width: 500px;
+    max-height: 300px;
+}

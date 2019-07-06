@@ -1,5 +1,4 @@
 import React,{ Component } from 'react';
-import ShowLatestOrders from './ShowLatestOrders';
 import GoodsInfo from './GoodsInfo';
 import { Get } from '../utils/Request';
 import '../stylesheets/Home.css';
@@ -22,7 +21,7 @@ export default class Home extends Component{
             this.setState({
                 books : data['书籍'],
                 virtuals : data['虚拟'],
-                houses : data['房子'],
+                houses : data['房屋'],
                 others : data['其它'],
                 activities : data['福利']
             });
@@ -30,7 +29,7 @@ export default class Home extends Component{
     }
     render(){
         let allGoods = [];
-        let allGoodsName = ['书籍', '虚拟', '房子', '其它', '福利'];
+        let allGoodsName = ['书籍', '虚拟', '房屋', '其它', '福利'];
         for(let i in this.state) allGoods=[...allGoods,this.state[i]];
         return(
             <div id='home'>{

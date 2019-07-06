@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { Carousel, Radio } from 'antd';
+import { Carousel } from 'antd';
 import '../stylesheets/ShowLatestOrders.css';
 
 export default class ShowLatestOrders extends Component{

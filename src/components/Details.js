@@ -1,31 +1,44 @@
 import React,{Component} from 'react'
-import {BrowserRouter as Router, Link} from 'react-router-dom'
-import { Layout, Breadcrumb, Card, Avatar, Col, Row, Button, Modal, Icon, message } from 'antd'
-import '../styleSheets/Details.css'
-import { thisExpression } from '@babel/types';
-import { relative } from 'path';
+import { Link} from 'react-router-dom'
+import { Layout, Breadcrumb, Card, Avatar, Col, Row, Button, Modal, message, Icon } from 'antd'
+import '../stylesheets/Details.css'
+import { Post, Get } from '../utils/Request';
 
 export default class Details extends Component{
     constructor(props){
         super(props);
+        let goods = this.props['location'].state;
+        console.log('进入Details了！');
+        console.log(goods);
+        let username = window.sessionStorage.getItem('username');
+        console.log(username)
+        console.log(window.sessionStorage);
         this.state={
-            sellerName:"灰太狼",
-            sellerAvatar:"xxx",
-            sellerSoldNum: 999,
-            sellerPaymentCode: "ooo",
+            //接收参数1
+            sellerName:"",
+            sellerAvatar:"",
+            sellerSoldNum: 0,
+            sellerPaymentCode: "",
+            terminalPay:1,
+            orderId: "",
+            buySuccess: 0,
+            cartSuccess: 0,
+            //维护状态
+            userName:username,
             btnDisable1: false,
             btnDisable2: false,
             loading:false,
-            goodsId:"007",
-            goodsName:"小红的帽子",
-            goodsImg:"adsad",
-            goodsInfo:"陪伴小红经历种种磨难却任然坚挺的帽子!",
-            goodsPrice:88,
-            sellerPhoneNum:"17766377737",
             goodsNum:1,
-            goodsStock:10,
             visible: false,
-            success: false
+            add:false,
+            //接收参数2
+            goodsId:goods.goodsId,
+            goodsName:goods.goodsName,
+            goodsImg:goods.goodsImg,
+            goodsInfo:goods.goodsInfo,
+            goodsPrice:goods.goodsPrice,
+            sellerPhoneNum:goods.sellerPhoneNum,
+            goodsStock:goods.goodsStock,
         }
         this.numChange1=this.numChange1.bind(this);
         this.numChange2=this.numChange2.bind(this);
@@ -78,16 +91,67 @@ export default class Details extends Component{
             }, 500);
         }
     };
-
+    //创建订单
+    handleCreateOrder = (username, goodsId, goodsNum) =>{
+        const globalMessage = message;
+        let url = '/api/goods/buyNow';
+        let data = {
+            '用户名':username,
+            '商品ID':goodsId,
+            '数量':goodsNum
+        }
+        let res = Post(url, data);
+        res.then(response=>{
+            let {code, message, data} = response;
+            if(code!==200){
+                globalMessage.warn(message);
+            }else{
+                let userData = data["卖家信息"];
+                //获取数据成功
+                this.setState({
+                    sellerPaymentCode: userData["收款码"],
+                    terminalPay:userData["金钱"],
+                    orderId: data["订单ID"],
+                    buySuccess: code,
+                });
+                globalMessage.success('购买成功！');
+            }
+        });
+    }
+    componentDidMount(){
+    }
+    handleAddGoodsToCart = (username, goodsId, goodsNum) =>{
+        const globalMessage = message;
+        let url = '/api/goods/addToCart';
+        let data = {
+            '用户名':username,
+            '商品ID':goodsId,
+            '商品数量':goodsNum
+        }
+        let res = Post(url, data);
+        res.then(response=>{
+            let {code, message, data} = response;
+            if(code!==200){
+                globalMessage.error(message);
+            }else{
+                //添加商品进入购物车成功
+                this.setState({
+                    cartSuccess : code
+                });
+                this.componentDidMount();
+                globalMessage.loading("正在提交...", 0.5).then(() => globalMessage.success('已成功添加到购物车,快去购物车看看宝贝吧~(っ ̯ -｡) '),undefined);
+            }
+        }); 
+    }
     //点击OK
     handleOk = e => {
-        console.log(e);
+        //console.log(e);
         if(this.state['goodsNum']==0){
             message.error('商品数量为0,你到底买不买啊!(｡•ˇ‸ˇ•｡)',2.5);
         }else{
-            this.state['success']?message.loading("正在提交...",0.5).then(()=>message.success('您已经完成支付! 卖家会在24小时内尽快联系您๑乛◡乛๑',2.5)):message.loading("正在提交...",0.5).then(()=>message.error('很抱歉,创建订单失败!我们将尽快进行处理!!!∑(ﾟДﾟノ)ノ',2.0));
             //需要调用创建订单的API
-
+            this.handleCreateOrder(this.state['userName'],this.state['goodsId'],this.state['goodsNum']);
+            //this.state['buySuccess']===200?message.loading("正在提交...", 0.5).then(()=>{message.success('您已经完成支付! 卖家会在24小时内尽快联系您๑乛◡乛๑',2.5)}) : message.loading("正在提交...",0.5).then(()=>message.error('很抱歉,创建订单失败!我们将尽快进行处理!!!∑(ﾟДﾟノ)ノ',2.0));
             this.setState({
                 visible: false,
             });
@@ -103,51 +167,60 @@ export default class Details extends Component{
     };
 
 
-    onChange(a, b, c) {
-        console.log(a, b, c);
-    }
     
     //添加商品至购物车
     addGoods = e => {
+        console.log("进入到添加商品到购物车!")
         if(this.state['goodsNum']==0){
             message.error('商品数量为0...你到底买不买啊!(｡•ˇ‸ˇ•｡)',2.5);
         }else{
             //调用添加商品到购物车的API
-            this.state['success']?message.loading("正在提交...",0.5).then(()=>message.success('已成功添加到购物车,快去购物车看看宝贝吧~(っ ̯ -｡) ',2.5)):message.loading("正在提交...",0.5).then(()=>message.error('添加到购物车失败！我们记录错误并尽快解决问题!!!∑(ﾟДﾟノ)ノ',2.5));
+            this.handleAddGoodsToCart(this.state['userName'],this.state['goodsId'],this.state['goodsNum']);
+           // this.state['cartSuccess']===200?message.loading("正在提交...",0.5).then(()=>message.success('已成功添加到购物车,快去购物车看看宝贝吧~(っ ̯ -｡) ',2.5)) : message.loading("正在提交...",0.5).then(()=>message.error('添加到购物车失败！我们记录错误并尽快解决问题!!!∑(ﾟДﾟノ)ノ',2.5));
         }
-        
     }
-
+    componentWillMount(){
+        const globalMessage = message;
+        let url = `/api/goods/getInfo?商品ID=${this.state['goodsId']}`;
+        let res = Get(url);
+        res.then(response=>{
+            let {code, message, data} = response;
+            if(code!==200){
+                globalMessage.warn(message);
+            }else{
+                //获取卖家信息成功
+                this.setState({
+                    sellerName:data['卖家名称'],
+                    sellerAvatar:data['卖家头像'],
+                    sellerSoldNum: data['卖家成功交易量'],
+                    sellerPaymentCode : data['收款码']
+                });
+            }
+        });
+    }
     render(){
         const { Meta } = Card;
         const ButtonGroup = Button.Group;
-        const post = {//this.props.locations.state.
-            goodsId:"007",
-            goodsName:"小红的帽子",
-            goodsInfo:"陪伴小红经历种种磨难却任然坚挺的帽子!",
-            goodsPrice:88,
-            sellerPhoneNum:"17766377737",
-            goodsNum:1,
-            goodsStock:233,
-
-        }
         const { Header, Content, Footer , Sider } = Layout;
+
+        console.log('立即购买！');
+        console.log(this.state);
         return(
-            <Layout className="Layout-Jankin">
-                <Header>
-                </Header>
+            <div id='details'>
+                <Layout className="Layout-Jankin">
                 <Content style={{ padding: '0 50px' }}>
-                    <Router>
                         <Breadcrumb separator=">"style={{ margin: '16px 0' }}>
-                            <Link to=""><Breadcrumb.Item>首页</Breadcrumb.Item></Link>
-                            <Link to=""><Breadcrumb.Item>分类名</Breadcrumb.Item></Link>
+                        <Link to="/home"><Breadcrumb.Item>首页</Breadcrumb.Item></Link>
+                            <Link to={{
+                                pathname:'/goods/gallery',
+                                state:{tag:this.props.location.state.tag}
+                            }}><Breadcrumb.Item>{this.props.location.state.tag}</Breadcrumb.Item></Link>
                             <Breadcrumb.Item>{this.state['goodsName']}</Breadcrumb.Item>
                         </Breadcrumb>
-                    </Router>
                     <div className="main" style={{ background: '#fff', padding: 24, minHeight: 280 }}>
                         <Layout>
                             <Layout>
-                                <Sider className="Sider-Jankin" id="goodsImg"><div><img src="" alt=""></img></div></Sider>
+                                <Sider className="Sider-Jankin" id="goodsImg"><div><img className='sider-goodsImg-Jankin' src={this.state['goodsImg']} alt={this.state['goodsName']}></img></div></Sider>
                                 <Layout>
                                     <Content>
                                         <div id="goodsInfo">
@@ -164,7 +237,7 @@ export default class Details extends Component{
                                                     <Row>
                                                         <Col span={8}>
                                                             <Card hoverable bordered={false}>
-                                                            <Avatar ></Avatar>
+                                                            <Avatar src={this.state['sellerAvatar']} ></Avatar>
                                                                 <span
                                                                     style={{
                                                                     fontSize: 14,
@@ -175,7 +248,7 @@ export default class Details extends Component{
                                                                 >
                                                                     {this.state['sellerName']}
                                                                 </span>
-                                                                    <p>联系方式:<p>{this.state['sellerPhoneNum']}</p></p>
+                                                                    <p>联系方式:<span>{this.state['sellerPhoneNum']}</span></p>
                                                             </Card>
                                                         </Col>
                                                         <Col span={8} offset={8}>
@@ -211,16 +284,16 @@ export default class Details extends Component{
                                                 <span>￥{this.state['goodsNum']*this.state['goodsPrice']}</span>
                                             </div>
                                         </Col>
-                                        <Col span={2}>
+                                        <Col span={4}>
                                             <div className="OperatorsBox">
-                                            <Button type="primary" shape="round" icon="shopping-cart" size="large" onClick={this.addGoods}>
+                                            <Button type="primary" shape="round" icon="shopping-cart" size="default" onClick={this.addGoods}>
                                                 添加至购物车
                                             </Button>
                                             </div>
                                         </Col>
                                         <Col span={3}>
                                             <div className="OperatorsBox">
-                                                <Button type="primary" shape="round" icon="pay-circle" size="large" loading={this.state['loading']} onClick={this.enterLoading}>
+                                                <Button type="primary" shape="round" icon="pay-circle" size="default" loading={this.state['loading']} onClick={this.enterLoading}>
                                                     立即购买
                                                 </Button>
                                                 <Modal
@@ -232,15 +305,15 @@ export default class Details extends Component{
                                                     <Card
                                                         style={{ width: '100%'}}
                                                         cover={
-                                                        <img
+                                                        <img className="moneyCode-img-c1er"
                                                             alt="付款码"
-                                                            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"//this.state.sellerPaymentCode
+                                                            src={this.state['sellerPaymentCode']}
                                                         />
                                                         }
-                                                        actions={[<img src={this.state['goosImg']} alt={this.state['goodsName']} />]}
+                                                        actions={[<img className='goods-img-c1er' src={this.state['goodsImg']} alt={this.state['goodsName']} />,<span><Icon type="pay-circle" />{this.state['goodsNum']*this.state['goodsPrice']}元</span>,<span>{this.state['terminalPay']}</span>]}
                                                     >
                                                         <Meta
-                                                        avatar={/*卖家头像 */<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                                        avatar={/*卖家头像 */<Avatar src={this.state['sellerAvatar']} />}
                                                         title={this.state['sellerName']}
                                                         description={this.state["goodsName"]}
                                                         />
@@ -254,11 +327,10 @@ export default class Details extends Component{
                         </Layout>
                     </div>
                 </Content>
-            <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
             </Layout>
+            </div>
         )
 
     }
 
 }
-{/**/}
